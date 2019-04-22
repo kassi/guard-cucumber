@@ -28,12 +28,10 @@ module Guard
         def focus(paths, focus_tag)
           return false if paths.empty?
 
-          paths.inject([]) do |updated_paths, path|
+          focused_paths = paths.inject([]) do |updated_paths, path|
             focused_line_numbers = scan_path_for_focus_tag(path, focus_tag)
 
-            if focused_line_numbers.empty?
-              updated_paths << path
-            else
+            unless focused_line_numbers.empty?
               updated_paths << append_line_numbers_to_path(
                 focused_line_numbers, path
               )
@@ -41,6 +39,8 @@ module Guard
 
             updated_paths
           end
+
+          focused_paths.any? ? focused_paths : paths
         end
 
         # Checks to see if the file at path contains the focus tag
